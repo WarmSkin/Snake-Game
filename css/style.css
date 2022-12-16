@@ -19,8 +19,11 @@ section.board {
 
 .sqr{
     border: 1.5px dotted black;
-    font-size: 8vmin;
+    font-size: 2vmin;
     text-align: center;
     vertical-align: middle;
     border-radius: 360%;
+
 }
+
+/* z-index   */
