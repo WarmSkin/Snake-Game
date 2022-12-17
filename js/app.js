@@ -25,7 +25,7 @@ const board = [
 ]
 
 const snake = {
-    headPosition: 240,
+    tailLength: 0,
     tailNo: [],
     lastTailPosition: 0,
 }
@@ -76,14 +76,11 @@ function changeDirection(e) {
     // gamePlay();
 }
 
-let i = 0;
+
 function game() {
-    while(!win){
-        setTimeout(gamePlay, i*500);
-        i++;
-        if(win || lost)
-            break;
-    }
+    let running = setInterval(gamePlay, 400);
+    if(win || lost)
+        clearInterval(running);
 }
 
 function gamePlay() {
@@ -99,38 +96,51 @@ function snakeMove() {
     if(eatFruit) {
         snake.tailNo =`#a${headPosition1}b${headPosition2}` + snake.tailNo;
         console.log("🚀 ~ file: app.js:98 ~ snakeMove ~ tailNo", snake.tailNo)
+        snake.tailLength++;
     }
-    else {
+    if(snake.tailLength){
+        let tailStr = snake.tailNo;
         for(let i = snake.tailNo.length -1; i >= 0; i--){
-            if(snake.tailNo[i] === 'b')
-                lastTailPosition2 = +snake.tailNo.slice(i).replace('b','');
-            else if (snake.tailNo[i] === "#"){
-                console.log(snake.tailNo[i]);
-                lastTailPosition1 = +snake.tailNo.slice(i).replace("#a",'');
+            if(tailStr[i] === 'b') {
+                lastTailPosition2 = +(tailStr.slice(i).replace('b',''));
+                tailStr = tailStr.slice(0, i);
+                if(!eatFruit)
+                    snake.tailNo = snake.tailNo.slice(0, i);
+            }
+            else if (tailStr[i] === '#'){
+                lastTailPosition1 = +(tailStr.slice(i).replace("#a",''));
+                //we don't need to update the tailStr(since we done with it) here.
+                if(!eatFruit)
+                    snake.tailNo = snake.tailNo.slice(0, i);
                 break;
             }
         }
         lastTailIdx = 22*lastTailPosition1 + lastTailPosition2;
-        console.log("🚀 ~ file: app.js:108 ~ snakeMove ~ lastTailPosition2", lastTailPosition2)
-        console.log("🚀 ~ file: app.js:108 ~ snakeMove ~ lastTailPosition1", lastTailPosition1)
-        console.log("🚀 ~ file: app.js:108 ~ snakeMove ~ lastTailIdx", lastTailIdx)
     }
+    else{
+        lastTailIdx = oldHeadSqrIdx;
+    }
+    
     headPosition1 += moveDirections[moveIndex][0];
     headPosition2 += moveDirections[moveIndex][1];
 }
 
 function render() {
     sqrIdx = 22*(headPosition1) + headPosition2;
-    console.log("🚀 ~ file: app.js:69 ~ render ~ sqrIdx", sqrIdx)
     if(eatFruit){
         document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
+        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
         eatFruit = false;
     }
-    else {
+    else if(snake.tailLength) {
         document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
         document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
+        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
     }
-    document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+    else{
+        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+        document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
+    }
 }
 
 game();
