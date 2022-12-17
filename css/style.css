@@ -22,7 +22,7 @@ section.board {
     font-size: 2vmin;
     text-align: center;
     vertical-align: middle;
-    border-radius: 360%;
+    /* border-radius: 360%; */
 
 }
 

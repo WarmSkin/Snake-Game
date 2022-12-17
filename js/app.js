@@ -93,14 +93,15 @@ function snakeMove() {
     // lastTailPosition1 = 
     // lastTailPosition2 = 
     oldHeadSqrIdx = 22*(headPosition1) + headPosition2;
-    if(eatFruit) {
+    if(eatFruit)
+        snake.tailLength++;
+
+    if(snake.tailLength){
         snake.tailNo =`#a${headPosition1}b${headPosition2}` + snake.tailNo;
         console.log("🚀 ~ file: app.js:98 ~ snakeMove ~ tailNo", snake.tailNo)
-        snake.tailLength++;
-    }
-    if(snake.tailLength){
+        console.log("tailLegnth", snake.tailLength)
         let tailStr = snake.tailNo;
-        for(let i = snake.tailNo.length -1; i >= 0; i--){
+        for(let i = tailStr.length -1; i >= 0; i--){
             if(tailStr[i] === 'b') {
                 lastTailPosition2 = +(tailStr.slice(i).replace('b',''));
                 tailStr = tailStr.slice(0, i);
@@ -112,6 +113,7 @@ function snakeMove() {
                 //we don't need to update the tailStr(since we done with it) here.
                 if(!eatFruit)
                     snake.tailNo = snake.tailNo.slice(0, i);
+                console.log("the tailNo", snake.tailNo);
                 break;
             }
         }
@@ -123,19 +125,20 @@ function snakeMove() {
     
     headPosition1 += moveDirections[moveIndex][0];
     headPosition2 += moveDirections[moveIndex][1];
+    sqrIdx = 22*(headPosition1) + headPosition2;
 }
 
 function render() {
-    sqrIdx = 22*(headPosition1) + headPosition2;
     if(eatFruit){
         document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
         document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
         eatFruit = false;
     }
     else if(snake.tailLength) {
+        console.log("not eating fruit");
+        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
         document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
         document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
-        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
     }
     else{
         document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
