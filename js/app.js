@@ -38,11 +38,13 @@ let movePosition1, movePosition2, eatFruit = false;
 /*------------------------ Cached Element References ------------------------*/
 const messageEl = document.querySelector("#message");
 const boardEl = document.querySelector(".board");
+const startEl = document.querySelector('#start-bt');
+const pauseEl = document.querySelector('#pause-bt');
 
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('click', changeDirection);
-document.querySelector('#start-bt').addEventListener('click', game);
-document.querySelector('#pause-bt').addEventListener('click', () => pause = true);
+startEl.addEventListener('click', game);
+pauseEl.addEventListener('click', () => pause = !pause);
 document.querySelector('#eat-bt').addEventListener('click', () => eatFruit = true);
 
 
@@ -78,15 +80,21 @@ function changeDirection(e) {
 
 function game() {
     messageEl.innerHTML = "";
+    pauseEl.style.display = "";
     boardEl.style.display = "grid";
+    startEl.style.display = "none";
     let running = setInterval(gamePlay, 400);
     
 }
 
 function gamePlay() {
+    if(pause) {
+        pauseEl.innerHTML = "Continue";
+    }
     if(!pause){
-    snakeMove();
-    render();
+        pauseEl.innerHTML = "Pause";
+        snakeMove();
+        render();
     }
     if(win || lost)
         clearInterval(running);
