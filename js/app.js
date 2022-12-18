@@ -27,13 +27,12 @@ const board = [
 const snake = {
     tailLength: 0,
     tailNo: [],
-    lastTailPosition: 0,
 }
 
 const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
 let start = false, pause = true, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx;
-let headPosition1 = 11, headPosition2 = 11, lastTailPosition1, lastTailPosition2, lastTailIdx;
+let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
 let movePosition1, movePosition2, eatFruit = false;
 
 /*------------------------ Cached Element References ------------------------*/
@@ -68,7 +67,7 @@ function changeDirection(e) {
             else if(movePosition2 > headPosition2) newMoveIdx = 6;
             else if(movePosition2 < headPosition2) newMoveIdx = 7;
         }
-        console.log("old", moveIdx, moveIdx[0],moveIdx[1], "new", newMoveIdx,newMoveIdx[0],newMoveIdx[1])
+        
         //snake should not be able to go reverse direction
         if(!( moveDirections[moveIdx][0] === -moveDirections[newMoveIdx][0] &&
              moveDirections[moveIdx][1] === -moveDirections[newMoveIdx][1])){
@@ -80,8 +79,8 @@ function changeDirection(e) {
 function game() {
     // pause = false;
     let running = setInterval(gamePlay, 400);
-    if(win || lost)
-        clearInterval(running);
+    // if(win || lost)
+    //     clearInterval(running);
 }
 
 function gamePlay() {
@@ -113,37 +112,48 @@ function snakeMove() {
                 //we don't need to update the tailStr(since we done with it) here.
                 if(!eatFruit)
                     snake.tailNo = snake.tailNo.slice(0, i);
-                console.log("the tailNo", snake.tailNo);
                 break;
             }
         }
         lastTailIdx = 22*lastTailPosition1 + lastTailPosition2;
     }
-    else{
-        lastTailIdx = oldHeadSqrIdx;
-    }
     
-    headPosition1 += moveDirections[moveIdx][0];
-    headPosition2 += moveDirections[moveIdx][1];
-    sqrIdx = 22*(headPosition1) + headPosition2;
+    newHeadPosition1 = moveDirections[moveIdx][0] + headPosition1;
+    newHeadPosition2 = moveDirections[moveIdx][1] + headPosition2;
+    sqrIdx = 22*(newHeadPosition1) + newHeadPosition2;
 }
 
 function render() {
-    if(eatFruit){
-        document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
-        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
-        eatFruit = false;
+    if(!pause && board[newHeadPosition1][newHeadPosition2] === 1){
+        lost = true;
+        console.log("You lost!");
     }
-    else if(snake.tailLength) {
-        console.log("not eating fruit");
-        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
-        document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
-        document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
+    
+    if(!lost){
+        if(eatFruit){
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            board[newHeadPosition1][newHeadPosition2] = 1;
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
+            board[headPosition1][headPosition2] = 1;
+
+            eatFruit = false;
+        }
+        else if(snake.tailLength) {
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            board[newHeadPosition1][newHeadPosition2] = 1;
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
+            board[headPosition1][headPosition2] = 1;
+            document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
+            board[lastTailPosition1][lastTailPosition2] = 0;
+        }
+        else{
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            board[newHeadPosition1][newHeadPosition2] = 1;
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "";
+            board[headPosition1][headPosition2] = 0;
+        }
     }
-    else{
-        document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
-        document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
-    }
+    headPosition1 = newHeadPosition1, headPosition2 = newHeadPosition2;
 }
 
 game();
