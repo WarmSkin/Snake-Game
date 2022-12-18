@@ -31,17 +31,17 @@ const snake = {
 
 const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
-let start = false, pause = true, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx;
+let start = false, pause = false, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx;
 let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
 let movePosition1, movePosition2, eatFruit = false;
 
 /*------------------------ Cached Element References ------------------------*/
+const messageEl = document.querySelector("#message");
 const boardEl = document.querySelector(".board");
-
 
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('click', changeDirection);
-document.querySelector('#start-bt').addEventListener('click', () => pause = false);
+document.querySelector('#start-bt').addEventListener('click', game);
 document.querySelector('#pause-bt').addEventListener('click', () => pause = true);
 document.querySelector('#eat-bt').addEventListener('click', () => eatFruit = true);
 
@@ -77,10 +77,10 @@ function changeDirection(e) {
 }
 
 function game() {
-    // pause = false;
+    messageEl.innerHTML = "";
+    boardEl.style.display = "grid";
     let running = setInterval(gamePlay, 400);
-    // if(win || lost)
-    //     clearInterval(running);
+    
 }
 
 function gamePlay() {
@@ -88,6 +88,8 @@ function gamePlay() {
     snakeMove();
     render();
     }
+    if(win || lost)
+        clearInterval(running);
 }
 
 function snakeMove() { 
@@ -126,7 +128,7 @@ function snakeMove() {
 function render() {
     if(!pause && board[newHeadPosition1][newHeadPosition2] === 1){
         lost = true;
-        console.log("You lost!");
+        messageEl.innerHTML = "You loose!"
     }
     
     if(!lost){
@@ -156,4 +158,4 @@ function render() {
     headPosition1 = newHeadPosition1, headPosition2 = newHeadPosition2;
 }
 
-game();
+// game();

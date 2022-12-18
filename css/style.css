@@ -6,8 +6,15 @@ body {
 	margin: 0;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+section.game-play {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 section.button {
@@ -16,7 +23,7 @@ section.button {
 }
 
 section.board {
-    display: grid;
+    display: none;
     grid-template-rows: repeat(22, 4vmin);
     grid-template-columns: repeat(22, 4vmin);
     grid-gap: 0vmin;
