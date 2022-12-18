@@ -10,16 +10,21 @@ body {
   align-items: center;
 }
 
+section.button {
+    display: flex;
+    flex-direction: column;
+}
+
 section.board {
     display: grid;
-    grid-template-rows: repeat(22, 3vmin);
-    grid-template-columns: repeat(22, 3vmin);
+    grid-template-rows: repeat(22, 4vmin);
+    grid-template-columns: repeat(22, 4vmin);
     grid-gap: 0vmin;
 }
 
 .sqr{
     border: 1.5px dotted black;
-    font-size: 2vmin;
+    font-size: 3vmin;
     text-align: center;
     vertical-align: middle;
     /* border-radius: 360%; */
