@@ -61,7 +61,7 @@ function dropAFruit () {
     board[fruitPosition1][fruitPosition2] = -1;
     fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
     
-    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = "🍎";
+    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = "🥔";
     dropFruit = false;
 }
 
@@ -115,7 +115,7 @@ function setUpWalls () {
             if(idx1 === 0 || idx1 === board.length -1 || idx2 === 0 || idx2 === x.length-1){
                 board[idx1][idx2] = 1;
                 wallSqrIdx = 22*idx1 + idx2;
-                document.getElementById(`sqr${wallSqrIdx}`).innerHTML = "🧱";
+                document.getElementById(`sqr${wallSqrIdx}`).innerHTML = "😋";
             }
         })
     })
@@ -176,7 +176,7 @@ function snakeMove() {
 function render() {
     if(!pause && board[newHeadPosition1][newHeadPosition2] === 1){
         lost = true;
-        messageEl.innerHTML = "You loose!"
+        messageEl.innerHTML = "You lose!"
     }
     
     if(!lost){
