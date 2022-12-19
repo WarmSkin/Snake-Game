@@ -51,50 +51,6 @@ pauseEl.addEventListener('click', () => pause = !pause);
 
 
 /*-------------------------------- Functions --------------------------------*/
-function dropAFruit () {
-    dropFruit = false;
-    let fruitPosition1, fruitPosition2, fruitSqrIdx;
-    while(!dropFruit){
-        fruitPosition1 = Math.floor(Math.random()*board.length);
-        fruitPosition2 = Math.floor(Math.random()*board[0].length);
-        if(board[fruitPosition1][fruitPosition2] !== 1)
-            dropFruit = true;
-    }
-    board[fruitPosition1][fruitPosition2] = -1;
-    fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
-    
-    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = "🥔";
-    dropFruit = false;
-}
-
-function changeDirection(e) {
-    if(!pause){
-        let directionId = +e.target.id.replace('sqr', '');
-        movePosition1 = Math.floor(directionId/board.length);
-        movePosition2 = directionId%board.length;
-        if(movePosition1 === headPosition1){
-            if(movePosition2 === headPosition2) ;//moving direction not change
-            else if(movePosition2 > headPosition2) newMoveIdx = 0;
-            else if(movePosition2 < headPosition2) newMoveIdx = 1;
-        }
-        else if(movePosition1 > headPosition1){
-            if(movePosition2 === headPosition2) newMoveIdx = 2;
-            else if(movePosition2 > headPosition2) newMoveIdx = 3;
-            else if(movePosition2 < headPosition2) newMoveIdx = 4;
-        }
-        else if(movePosition1 < headPosition1){
-            if(movePosition2 === headPosition2) newMoveIdx = 5;
-            else if(movePosition2 > headPosition2) newMoveIdx = 6;
-            else if(movePosition2 < headPosition2) newMoveIdx = 7;
-        }
-        
-        //snake should not be able to go reverse direction
-        if(!( moveDirections[moveIdx][0] === -moveDirections[newMoveIdx][0] &&
-             moveDirections[moveIdx][1] === -moveDirections[newMoveIdx][1])){
-            moveIdx = newMoveIdx;
-        }
-    }
-}
 
 function game() {
     gameStart();
@@ -132,7 +88,7 @@ function gamePlay() {
         snakeMove();
         render();
         if(win || lost)
-            clearInterval(running);
+        clearInterval(running);
     }
 }
 
@@ -153,7 +109,7 @@ function snakeMove() {
     }
     if(snake.tailLength){
         snake.tailNo =`a${headPosition1}b${headPosition2}` + snake.tailNo;
-
+        
         let tailStr = snake.tailNo; //make a copy.
         //get the positions from the string.
         for(let i = tailStr.length -1; i >= 0; i--){
@@ -161,19 +117,49 @@ function snakeMove() {
                 lastTailPosition2 = +(tailStr.slice(i).replace('b',''));
                 tailStr = tailStr.slice(0, i);
                 if(!eatFruit)
-                    snake.tailNo = snake.tailNo.slice(0, i);
+                snake.tailNo = snake.tailNo.slice(0, i);
             }
             else if (tailStr[i] === 'a'){
                 lastTailPosition1 = +(tailStr.slice(i).replace("a",''));
                 //we don't need to update the tailStr(since we done with it) here.
                 if(!eatFruit)
-                    snake.tailNo = snake.tailNo.slice(0, i);
+                snake.tailNo = snake.tailNo.slice(0, i);
                 break;
             }
         }
         lastTailIdx = 22*lastTailPosition1 + lastTailPosition2;
     }
     
+}
+
+
+function changeDirection(e) {
+    if(!pause){
+        let directionId = +e.target.id.replace('sqr', '');
+        movePosition1 = Math.floor(directionId/board.length);
+        movePosition2 = directionId%board.length;
+        if(movePosition1 === headPosition1){
+            if(movePosition2 === headPosition2) ;//moving direction not change
+            else if(movePosition2 > headPosition2) newMoveIdx = 0;
+            else if(movePosition2 < headPosition2) newMoveIdx = 1;
+        }
+        else if(movePosition1 > headPosition1){
+            if(movePosition2 === headPosition2) newMoveIdx = 2;
+            else if(movePosition2 > headPosition2) newMoveIdx = 3;
+            else if(movePosition2 < headPosition2) newMoveIdx = 4;
+        }
+        else if(movePosition1 < headPosition1){
+            if(movePosition2 === headPosition2) newMoveIdx = 5;
+            else if(movePosition2 > headPosition2) newMoveIdx = 6;
+            else if(movePosition2 < headPosition2) newMoveIdx = 7;
+        }
+        
+        //snake should not be able to go reverse direction
+        if(!( moveDirections[moveIdx][0] === -moveDirections[newMoveIdx][0] &&
+            moveDirections[moveIdx][1] === -moveDirections[newMoveIdx][1])){
+                moveIdx = newMoveIdx;
+            }
+    }
 }
 
 function render() {
@@ -186,19 +172,21 @@ function render() {
     
     if(!lost){
         if(dropFruit) dropAFruit();
-
+        if(snake.tailLength && snake.tailLength % 10 === 3) dropObstacle();
+        
         if(eatFruit){
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            // document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = `<img src="./data/spongebobRuningRight.png" alt="">`
             board[newHeadPosition1][newHeadPosition2] = 1;
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
             board[headPosition1][headPosition2] = 1;
-
+            
             soundEl.play();
             eatFruit = false;
             dropFruit = true;
         }
         else if(snake.tailLength) {
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🧽";
             board[newHeadPosition1][newHeadPosition2] = 1;
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
             board[headPosition1][headPosition2] = 1;
@@ -206,7 +194,7 @@ function render() {
             board[lastTailPosition1][lastTailPosition2] = 0;
         }
         else{
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🧽";
             board[newHeadPosition1][newHeadPosition2] = 1;
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "";
             board[headPosition1][headPosition2] = 0;
@@ -215,4 +203,32 @@ function render() {
     headPosition1 = newHeadPosition1, headPosition2 = newHeadPosition2;
 }
 
-// game();
+function dropAFruit () {
+    dropFruit = false;
+    let fruitPosition1, fruitPosition2, fruitSqrIdx;
+    while(!dropFruit){
+        fruitPosition1 = Math.floor(Math.random()*board.length);
+        fruitPosition2 = Math.floor(Math.random()*board[0].length);
+        if(board[fruitPosition1][fruitPosition2] !== 1)
+            dropFruit = true;
+    }
+    board[fruitPosition1][fruitPosition2] = -1;
+    fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
+    
+    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = "🥔";
+    dropFruit = false;
+}
+
+function dropObstacle() {
+    let objectPosition1, objectPosition2, objectSqrIdx;
+    while(1){
+        objectPosition1 = Math.floor(Math.random()*board.length);
+        objectPosition2 = Math.floor(Math.random()*board[0].length);
+        if(board[objectPosition1][objectPosition2] !== 1 && board[objectPosition1][objectPosition2] !== -1)
+            break;
+    }
+    board[objectPosition1][objectPosition2] = 1;
+    objectSqrIdx = board.length*objectPosition1 + objectPosition2;
+    document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
+    `<img src="./data/Mr.Crabs.png" alt="" style="height: 3vmin;">`
+}

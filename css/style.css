@@ -10,7 +10,8 @@ body {
   justify-content: center;
   align-items: center;
   background-image: url("../data/spongebob.jpg");
-  background-size: cover;
+  background-size: 100vw;
+  background-repeat: no-repeat;
   background-position-y: center;
 }
 
