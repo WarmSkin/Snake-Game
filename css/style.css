@@ -9,6 +9,9 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: url("../data/spongebob.jpg");
+  background-size: cover;
+  background-position-y: center;
 }
 
 section.game-play {
