@@ -13,6 +13,14 @@ body {
   background-size: 100vw;
   background-repeat: no-repeat;
   background-position-y: center;
+  /* disable user select */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                          supported by Chrome, Edge, Opera and Firefox */
 }
 
 section.game-play {
@@ -31,6 +39,7 @@ section.board {
     grid-template-rows: repeat(22, 4vmin);
     grid-template-columns: repeat(22, 4vmin);
     grid-gap: 0vmin;
+    background-image: url("../data/water-20.gif");
 }
 
 .sqr{
@@ -38,8 +47,6 @@ section.board {
     font-size: 3vmin;
     text-align: center;
     vertical-align: middle;
-    /* border-radius: 360%; */
-
 }
 
 /* z-index   */

@@ -230,5 +230,5 @@ function dropObstacle() {
     board[objectPosition1][objectPosition2] = 1;
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
-    `<img src="./data/Mr.Crabs.png" alt="" style="height: 3vmin;">`
+    `<img src="./data/Mr.Crabs.png" alt="" style="height: 4vmin;">`
 }
