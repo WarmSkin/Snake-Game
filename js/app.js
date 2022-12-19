@@ -41,7 +41,9 @@ const boardEl = document.querySelector(".board");
 const startEl = document.querySelector('#start-bt');
 const pauseEl = document.querySelector('#pause-bt');
 const scoreEl = document.querySelector('#score');
+const soundEl = new Audio();
 
+soundEl.setAttribute("src", "./audio/touch.mp3")
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('click', changeDirection);
 startEl.addEventListener('click', game);
@@ -147,6 +149,7 @@ function snakeMove() {
         eatFruit = true;
         snake.tailLength++;
         scoreEl.innerHTML = `Score: ${snake.tailLength}`;
+        
     }
     if(snake.tailLength){
         snake.tailNo =`a${headPosition1}b${headPosition2}` + snake.tailNo;
@@ -176,7 +179,9 @@ function snakeMove() {
 function render() {
     if(!pause && board[newHeadPosition1][newHeadPosition2] === 1){
         lost = true;
-        messageEl.innerHTML = "You lose!"
+        messageEl.innerHTML = `You lose! Your score is ${snake.tailLength}.`
+        soundEl.setAttribute("src", "./audio/lose.wav")
+        soundEl.play();
     }
     
     if(!lost){
@@ -188,6 +193,7 @@ function render() {
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
             board[headPosition1][headPosition2] = 1;
 
+            soundEl.play();
             eatFruit = false;
             dropFruit = true;
         }
