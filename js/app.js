@@ -1,3 +1,5 @@
+import { imgData, jellyFishData } from "../data/data.js";
+
 /*-------------------------------- Constants --------------------------------*/
 const board = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -27,13 +29,14 @@ const board = [
 const snake = {
     tailLength: 0,
     tailNo: "",
+    tailIdx: [],
 }
 
 const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
-let start = false, pause = false, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx;
+let start = false, pause = false, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
 let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
-let movePosition1, movePosition2, eatFruit = false, dropFruit = true;
+let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx;
 
 /*------------------------ Cached Element References ------------------------*/
 const messageEl = document.querySelector("#message");
@@ -73,7 +76,8 @@ function setUpWalls () {
             if(idx1 === 0 || idx1 === board.length -1 || idx2 === 0 || idx2 === x.length-1){
                 board[idx1][idx2] = 1;
                 wallSqrIdx = 22*idx1 + idx2;
-                document.getElementById(`sqr${wallSqrIdx}`).innerHTML = "😋";
+                document.getElementById(`sqr${wallSqrIdx}`).innerHTML = 
+                `<img src="./data/image/patrick's-house.png" alt="" style="height: 4vmin;">`
             }
         })
     })
@@ -98,12 +102,10 @@ function snakeMove() {
     newHeadPosition2 = moveDirections[moveIdx][1] + headPosition2;
     sqrIdx = 22*(newHeadPosition1) + newHeadPosition2;
     
-    // if(eatFruit)
-    // snake.tailLength++;
-    
     if(!pause && board[newHeadPosition1][newHeadPosition2] === -1) {
         eatFruit = true;
         snake.tailLength++;
+        snake.tailIdx.push(jellyFishIdx);
         scoreEl.innerHTML = `Score: ${snake.tailLength}`;
         
     }
@@ -163,22 +165,23 @@ function changeDirection(e) {
 }
 
 function render() {
-    if(!pause && board[newHeadPosition1][newHeadPosition2] === 1){
+    if(!pause && board[newHeadPosition1][newHeadPosition2] > 0){
         lost = true;
-        messageEl.innerHTML = `You lose! Your score is ${snake.tailLength}.`
-        soundEl.setAttribute("src", "./audio/lose.wav")
+        messageEl.innerHTML = `You lose! Your score is ${snake.tailLength}.`;
+        soundEl.setAttribute("src", "./audio/lose.wav");
         soundEl.play();
     }
     
     if(!lost){
         if(dropFruit) dropAFruit();
         if(snake.tailLength && snake.tailLength % 10 === 3) dropObstacle();
+        else cleanUpObstacle();
         
+        jellyDisplayIdx = snake.tailIdx[(jellyTailIdx++ % snake.tailLength)];
         if(eatFruit){
-            // document.getElementById(`sqr${sqrIdx}`).innerHTML = "🍔";
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = `<img src="./data/spongebobRuningRight.png" alt="">`
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = `<img src="./data/image/spongebobJump.png" alt="">`;
             board[newHeadPosition1][newHeadPosition2] = 1;
-            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = jellyFishData[jellyDisplayIdx];
             board[headPosition1][headPosition2] = 1;
             
             soundEl.play();
@@ -186,15 +189,17 @@ function render() {
             dropFruit = true;
         }
         else if(snake.tailLength) {
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🧽";
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = imgData[moveIdx];
+                // `<img src="./data/spongebobRuningLeft.png" alt="" style="height: 4vmin;">`
             board[newHeadPosition1][newHeadPosition2] = 1;
-            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "🍟";
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = jellyFishData[jellyDisplayIdx];
             board[headPosition1][headPosition2] = 1;
             document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
             board[lastTailPosition1][lastTailPosition2] = 0;
         }
         else{
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = "🧽";
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = imgData[moveIdx];
+                // `<img src="./data/spongebobRuningLeft.png" alt="" style="height: 4vmin;">`
             board[newHeadPosition1][newHeadPosition2] = 1;
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "";
             board[headPosition1][headPosition2] = 0;
@@ -214,8 +219,8 @@ function dropAFruit () {
     }
     board[fruitPosition1][fruitPosition2] = -1;
     fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
-    
-    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = "🥔";
+    jellyFishIdx = Math.floor(Math.random()*jellyFishData.length);
+    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = jellyFishData[jellyFishIdx];
     dropFruit = false;
 }
 
@@ -227,8 +232,21 @@ function dropObstacle() {
         if(board[objectPosition1][objectPosition2] !== 1 && board[objectPosition1][objectPosition2] !== -1)
             break;
     }
-    board[objectPosition1][objectPosition2] = 1;
+    board[objectPosition1][objectPosition2] = 2;
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
-    `<img src="./data/Mr.Crabs.png" alt="" style="height: 4vmin;">`
+    `<img src="./data/image/Mr.Crabs.png" alt="" style="height: 4vmin;">`
+}
+
+function cleanUpObstacle() {
+    let cleanIdx;
+    board.forEach((x, idx1) => {
+        x.forEach((y, idx2) => {
+            if(board[idx1][idx2] === 2){
+                board[idx1][idx2] = 0;
+                cleanIdx = idx1*board.length + idx2;
+                document.getElementById(`sqr${cleanIdx}`).innerHTML = ``;
+            }
+        })
+    })
 }

@@ -9,8 +9,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url("../data/spongebob.jpg");
-  background-size: 100vw;
+  background-image: url("../data/image/spongebob.jpg");
+  background-size: cover;
   background-repeat: no-repeat;
   background-position-y: center;
   /* disable user select */
@@ -39,14 +39,25 @@ section.board {
     grid-template-rows: repeat(22, 4vmin);
     grid-template-columns: repeat(22, 4vmin);
     grid-gap: 0vmin;
-    background-image: url("../data/water-20.gif");
+    background-image: url("../data/image/water-background.jpg");
+    background-size: cover;
 }
 
-.sqr{
+.sqr {
     border: 1.5px dotted black;
     font-size: 3vmin;
     text-align: center;
     vertical-align: middle;
+    /* transition: 0.2s; */
 }
 
+#start-bt {
+    position: relative;
+    border: none;
+    background-color: transparent;
+    font-size: 26px;
+    margin-top: 25vh;
+    margin-right: -14vw;
+    color:aquamarine;
+}
 /* z-index   */
