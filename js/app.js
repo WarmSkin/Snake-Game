@@ -34,7 +34,7 @@ const snake = {
 
 const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
-let start = false, pause = false, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
+let pause = false, lost = false, newMoveIdx, moveIdx = 0, snakeMoved = false, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
 let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
 let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx, obstacleNo = 0;
 
@@ -87,7 +87,7 @@ function gamePlay() {
     if(pause) {
         pauseEl.innerHTML = "Continue";
     }
-    else if(!lost && !win) {
+    else if(!lost) {
         pauseEl.innerHTML = "Pause";
         snakeMove();
         render();
@@ -138,8 +138,9 @@ function snakeMove() {
 function changeDirection(e) {
     if(!pause){
         let directionId = +e.target.id.replace('sqr', '');
+        console.log("🚀 ~ file: app.js:141 ~ changeDirection ~ directionId", directionId)
 
-        if(directionId){ 
+        if(directionId && snakeMoved){ 
             movePosition1 = Math.floor(directionId/board.length);
             movePosition2 = directionId%board.length;
             if(movePosition1 === headPosition1){
@@ -157,13 +158,15 @@ function changeDirection(e) {
                 else if(movePosition2 > headPosition2) newMoveIdx = 6;
                 else if(movePosition2 < headPosition2) newMoveIdx = 7;
             }
-            
+            console.log("🚀 ~ file: app.js:160 ~ changeDirection ~ newMoveIdx", newMoveIdx)
+            console.log("🚀 ~ file: app.js:160 ~ changeDirection ~ MoveIdx", moveIdx)
             //snake should not be able to go reverse direction
-            if(!( moveDirections[moveIdx][0] === -moveDirections[newMoveIdx][0] &&
-                moveDirections[moveIdx][1] === -moveDirections[newMoveIdx][1])){
+            if(!(moveDirections[moveIdx][0] + moveDirections[newMoveIdx][0] === 0
+                && moveDirections[moveIdx][1] + moveDirections[newMoveIdx][1] === 0)){
                     moveIdx = newMoveIdx;
                 }
-        }
+            }
+            snakeMoved = false;
     }
 }
 
@@ -207,8 +210,10 @@ function render() {
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "";
             board[headPosition1][headPosition2] = 0;
         }
+
+        headPosition1 = newHeadPosition1, headPosition2 = newHeadPosition2;
+        snakeMoved = true;
     }
-    headPosition1 = newHeadPosition1, headPosition2 = newHeadPosition2;
 }
 
 function dropAFruit () {
