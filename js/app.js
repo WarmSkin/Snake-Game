@@ -36,7 +36,7 @@ const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
 let start = false, pause = false, win = false, lost = false, newMoveIdx, moveIdx = 0, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
 let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
-let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx;
+let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx, obstacleNo = 0;
 
 /*------------------------ Cached Element References ------------------------*/
 const messageEl = document.querySelector("#message");
@@ -138,32 +138,32 @@ function snakeMove() {
 function changeDirection(e) {
     if(!pause){
         let directionId = +e.target.id.replace('sqr', '');
-        console.log(e.target.id);
-        console.log("🚀 ~ file: app.js:141 ~ changeDirection ~ directionId", directionId);
-        
-        movePosition1 = Math.floor(directionId/board.length);
-        movePosition2 = directionId%board.length;
-        if(movePosition1 === headPosition1){
-            if(movePosition2 === headPosition2) ;//moving direction not change
-            else if(movePosition2 > headPosition2) newMoveIdx = 0;
-            else if(movePosition2 < headPosition2) newMoveIdx = 1;
-        }
-        else if(movePosition1 > headPosition1){
-            if(movePosition2 === headPosition2) newMoveIdx = 2;
-            else if(movePosition2 > headPosition2) newMoveIdx = 3;
-            else if(movePosition2 < headPosition2) newMoveIdx = 4;
-        }
-        else if(movePosition1 < headPosition1){
-            if(movePosition2 === headPosition2) newMoveIdx = 5;
-            else if(movePosition2 > headPosition2) newMoveIdx = 6;
-            else if(movePosition2 < headPosition2) newMoveIdx = 7;
-        }
-        
-        //snake should not be able to go reverse direction
-        if(!( moveDirections[moveIdx][0] === -moveDirections[newMoveIdx][0] &&
-            moveDirections[moveIdx][1] === -moveDirections[newMoveIdx][1])){
-                moveIdx = newMoveIdx;
+
+        if(directionId){ 
+            movePosition1 = Math.floor(directionId/board.length);
+            movePosition2 = directionId%board.length;
+            if(movePosition1 === headPosition1){
+                if(movePosition2 === headPosition2) ;//moving direction not change
+                else if(movePosition2 > headPosition2) newMoveIdx = 0;
+                else if(movePosition2 < headPosition2) newMoveIdx = 1;
             }
+            else if(movePosition1 > headPosition1){
+                if(movePosition2 === headPosition2) newMoveIdx = 2;
+                else if(movePosition2 > headPosition2) newMoveIdx = 3;
+                else if(movePosition2 < headPosition2) newMoveIdx = 4;
+            }
+            else if(movePosition1 < headPosition1){
+                if(movePosition2 === headPosition2) newMoveIdx = 5;
+                else if(movePosition2 > headPosition2) newMoveIdx = 6;
+                else if(movePosition2 < headPosition2) newMoveIdx = 7;
+            }
+            
+            //snake should not be able to go reverse direction
+            if(!( moveDirections[moveIdx][0] === -moveDirections[newMoveIdx][0] &&
+                moveDirections[moveIdx][1] === -moveDirections[newMoveIdx][1])){
+                    moveIdx = newMoveIdx;
+                }
+        }
     }
 }
 
@@ -229,14 +229,14 @@ function dropAFruit () {
 
 //when cleanUpObstacle, there would be n obstacles stay on the board.
 function dropObstacle(n) {
-    let objectPosition1, objectPosition2, objectSqrIdx, number = 0;
+    let objectPosition1, objectPosition2, objectSqrIdx;
     while(1){
         objectPosition1 = Math.floor(Math.random()*board.length);
         objectPosition2 = Math.floor(Math.random()*board[0].length);
         if(board[objectPosition1][objectPosition2] !== 1 && board[objectPosition1][objectPosition2] !== -1)
             break;
     }
-    board[objectPosition1][objectPosition2] = number++ >= n ? 2 : 3;
+    board[objectPosition1][objectPosition2] = obstacleNo++ >= n ? 2 : 3;
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
     `<img src="./data/image/Mr.Crabs.png" alt="" style="height: 4vmin;">`
