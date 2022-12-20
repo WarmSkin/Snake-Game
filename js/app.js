@@ -91,7 +91,7 @@ function gamePlay() {
         pauseEl.innerHTML = "Pause";
         snakeMove();
         render();
-        if(win || lost)
+        if(lost)
         clearInterval(running);
     }
 }
