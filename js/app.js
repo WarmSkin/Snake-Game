@@ -48,7 +48,7 @@ const soundEl = new Audio();
 
 soundEl.setAttribute("src", "./audio/touch.mp3")
 /*----------------------------- Event Listeners -----------------------------*/
-boardEl.addEventListener('click', changeDirection);
+boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
 pauseEl.addEventListener('click', () => pause = !pause);
 
@@ -134,10 +134,13 @@ function snakeMove() {
     
 }
 
-
+// const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 function changeDirection(e) {
     if(!pause){
         let directionId = +e.target.id.replace('sqr', '');
+        console.log(e.target.id);
+        console.log("🚀 ~ file: app.js:141 ~ changeDirection ~ directionId", directionId);
+        
         movePosition1 = Math.floor(directionId/board.length);
         movePosition2 = directionId%board.length;
         if(movePosition1 === headPosition1){
@@ -174,7 +177,7 @@ function render() {
     
     if(!lost){
         if(dropFruit) dropAFruit();
-        if(snake.tailLength && snake.tailLength % 10 === 3) dropObstacle();
+        if(snake.tailLength && snake.tailLength % 10 === 3) dropObstacle(1);
         else cleanUpObstacle();
         
         jellyDisplayIdx = snake.tailIdx[(jellyTailIdx++ % snake.tailLength)];
@@ -224,15 +227,16 @@ function dropAFruit () {
     dropFruit = false;
 }
 
-function dropObstacle() {
-    let objectPosition1, objectPosition2, objectSqrIdx;
+//when cleanUpObstacle, there would be n obstacles stay on the board.
+function dropObstacle(n) {
+    let objectPosition1, objectPosition2, objectSqrIdx, number = 0;
     while(1){
         objectPosition1 = Math.floor(Math.random()*board.length);
         objectPosition2 = Math.floor(Math.random()*board[0].length);
         if(board[objectPosition1][objectPosition2] !== 1 && board[objectPosition1][objectPosition2] !== -1)
             break;
     }
-    board[objectPosition1][objectPosition2] = 2;
+    board[objectPosition1][objectPosition2] = number++ >= n ? 2 : 3;
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
     `<img src="./data/image/Mr.Crabs.png" alt="" style="height: 4vmin;">`
