@@ -39,12 +39,12 @@ section.board {
     grid-template-rows: repeat(22, 4vmin);
     grid-template-columns: repeat(22, 4vmin);
     grid-gap: 0vmin;
-    background-image: url("../data/image/water-background.jpg");
+    background-color:deepskyblue;
     background-size: cover;
 }
 
 .sqr {
-    border: 1.5px dotted black;
+    border: 0.5px dotted black;
     font-size: 3vmin;
     text-align: center;
     vertical-align: middle;

@@ -244,7 +244,7 @@ function dropObstacle(n) {
     board[objectPosition1][objectPosition2] = obstacleNo++ >= n ? 2 : 3;
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
-    `<img src="./data/image/Mr.Crabs.png" alt="" style="height: 4vmin;">`
+    `<img src="./data/image/mrCrabs.png" alt="" style="height: 4vmin;">`
 }
 
 function cleanUpObstacle() {
