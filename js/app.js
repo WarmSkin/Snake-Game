@@ -36,7 +36,7 @@ const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
 let gameRunning, pause = false, lost = false, newMoveIdx, moveIdx = 0, snakeMoved = false, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
 let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
-let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx, obstacleNo = 0;
+let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx, obstacleNo = 0, musicOn = true;
 
 /*------------------------ Cached Element References ------------------------*/
 const messageEl = document.querySelector("#message");
@@ -45,6 +45,7 @@ const startEl = document.querySelector("#start-bt");
 const pauseEl = document.querySelector("#pause-bt");
 const resetEl = document.querySelector("#reset");
 const scoreEl = document.querySelector("#score");
+const musicEl = document.querySelector("#music");
 const gamePlaySoundEl = new Audio();
 const specialEventSoundEl = new Audio();
 
@@ -54,6 +55,7 @@ boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
+musicEl.addEventListener('click', () => musicOn = !musicOn);
 
 /*-------------------------------- Functions --------------------------------*/
 function pauseF () {
@@ -62,8 +64,8 @@ function pauseF () {
         if(pause) {
             clearInterval(gameRunning);
             pauseEl.innerHTML = "Continue";
-            gamePlaySoundEl.setAttribute("src", musicData[randomIdx(musicData)]);
-            gamePlaySoundEl.play();
+            // gamePlaySoundEl.setAttribute("src", musicData[randomIdx(musicData)]);
+            // gamePlaySoundEl.play();
         }
         else {
             gameRunning = setInterval(gamePlay, 400);
@@ -94,8 +96,10 @@ function gameStart() {
     pauseEl.style.display = "";
     scoreEl.style.display = "";
     resetEl.style.display = "";
+    musicEl.style.display = "";
     boardEl.style.display = "grid";
     startEl.style.display = "none";
+    document.querySelector("body").style.backgroundImage = `url("../data/image/gamePlayBackground.jpg")`
     setUpWalls();
 }
 
@@ -107,7 +111,7 @@ function setUpWalls () {
             if(idx1 === 0 || idx1 === board.length -1 || idx2 === 0 || idx2 === x.length-1){
                 board[idx1][idx2] = 1;
                 document.getElementById(`sqr${wallSqrIdx}`).innerHTML = 
-                `<img src="./data/image/patrick's-house.png" alt="" style="height: 4vmin;">`;
+                `<img src="./data/image/patrick's-house.png" alt="" style="height: 5vmin;">`;
             }
             else {
                 board[idx1][idx2] = 0;
@@ -288,7 +292,8 @@ function dropObstacle(n) {
     }
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
-    `<img src="./data/image/mrCrabs.png" alt="" style="height: 4vmin;">`
+    `<img src="./data/image/mrCrabs.png" alt="" style="height: 5vmin;">`
+    animateCSS(`#sqr${objectSqrIdx}`, "bounce");
 }
 
 function cleanUpObstacle() {
@@ -309,3 +314,24 @@ function cleanUpObstacle() {
         })
     })
 }
+
+//ANIMATION
+//####################################################################################
+//copied from animate.style
+const animateCSS = (element, animation, prefix = 'animate__') =>
+  // We create a Promise and return it
+  new Promise((resolve, reject) => {
+    const animationName = `${prefix}${animation}`;
+    const node = document.querySelector(element);
+
+    node.classList.add(`${prefix}animated`, animationName);
+
+    // When the animation ends, we clean the classes and resolve the Promise
+    function handleAnimationEnd(event) {
+      event.stopPropagation();
+      node.classList.remove(`${prefix}animated`, animationName);
+      resolve('Animation ended');
+    }
+
+    node.addEventListener('animationend', handleAnimationEnd, {once: true});
+  });

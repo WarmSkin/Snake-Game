@@ -13,6 +13,8 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position-y: center;
+  /* background-position-x:  ; */
+
   /* disable user select */
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -39,12 +41,17 @@ section.board {
     grid-template-rows: repeat(22, 4vmin);
     grid-template-columns: repeat(22, 4vmin);
     grid-gap: 0vmin;
-    background-color:deepskyblue;
+    background-color:rgb(109, 207, 246);
     background-size: cover;
+    margin-right: 8vmin;
+}
+
+button {
+    border-radius: 100px;
 }
 
 .sqr {
-    /* border: 0.5px dotted black; */
+    border: 0.5px dotted black;
     font-size: 4vmin;
     text-align: center;
     vertical-align: middle;
