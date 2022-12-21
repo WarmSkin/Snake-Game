@@ -55,17 +55,25 @@ boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
-musicEl.addEventListener('click', () => musicOn = !musicOn);
+musicEl.addEventListener('click', musicControl);
 
 /*-------------------------------- Functions --------------------------------*/
+
+function musicControl() {
+    musicOn = !musicOn;
+    gamePlaySoundEl.volume = musicOn? 0.7 : 0;
+    specialEventSoundEl.volume = musicOn? 0.7 : 0;
+    musicEl.innerHTML = musicOn? "Sound: On" : "Sound:Off";
+}
+
 function pauseF () {
     if(!lost){
         pause = ! pause;
         if(pause) {
             clearInterval(gameRunning);
             pauseEl.innerHTML = "Continue";
-            // gamePlaySoundEl.setAttribute("src", musicData[randomIdx(musicData)]);
-            // gamePlaySoundEl.play();
+            gamePlaySoundEl.setAttribute("src", musicData[randomIdx(musicData)]);
+            gamePlaySoundEl.play();
         }
         else {
             gameRunning = setInterval(gamePlay, 400);
