@@ -1,4 +1,4 @@
-import { imgData, jellyFishData } from "../data/data.js";
+import { imgData, jellyFishData, musicData } from "../data/data.js";
 
 /*-------------------------------- Constants --------------------------------*/
 const board = [
@@ -51,10 +51,24 @@ soundEl.setAttribute("src", "./audio/touch.mp3")
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
-pauseEl.addEventListener('click', () => pause = !pause);
+pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
 
 /*-------------------------------- Functions --------------------------------*/
+function pauseF () {
+    if(!lost){
+        pause = ! pause;
+        if(pause) {
+            clearInterval(gameRunning);
+            pauseEl.innerHTML = "Continue";
+            soundEl.setAttribute("src", musicData[randomIdx(musicData)]);
+            soundEl.play();
+        }
+        else {
+            gameRunning = setInterval(gamePlay, 400);
+        }
+    }
+}
 
 function reset() {
     clearInterval(gameRunning);
@@ -103,14 +117,17 @@ function setUpWalls () {
 }
 
 function gamePlay() {
-    if(pause) {
-        pauseEl.innerHTML = "Continue";
-    }
-    else if(!lost) {
+   if(!lost) {
         pauseEl.innerHTML = "Pause";
+        soundEl.setAttribute("src", "./audio/touch.mp3");
         snakeMove();
         render();
     }
+}
+
+//return a random index from a obj or arr.
+function randomIdx(obj) {
+    return Math.floor(Math.random()*obj.length);
 }
 
 function snakeMove() { 
@@ -188,14 +205,20 @@ function render() {
     if(!pause && board[newHeadPosition1][newHeadPosition2] > 0){
         lost = true;
         messageEl.innerHTML = `You lose! Your score is ${snake.tailLength}.`;
-        soundEl.setAttribute("src", "./audio/lose.wav");
+        soundEl.setAttribute("src", "./audio/endingSong.mp3");
         soundEl.play();
+        clearInterval(gameRunning);
     }
     
     if(!lost){
         if(dropFruit) dropAFruit();
-        if(snake.tailLength && snake.tailLength % 10 === 3) dropObstacle(1);
-        else cleanUpObstacle();
+        if(snake.tailLength && snake.tailLength % 10 === 3){
+            dropObstacle(1);
+        }
+        else {
+            if(obstacleNo)
+                cleanUpObstacle();
+        }
         
         jellyDisplayIdx = snake.tailIdx[(jellyTailIdx++ % snake.tailLength)];
         if(eatFruit){
@@ -234,14 +257,14 @@ function dropAFruit () {
     dropFruit = false;
     let fruitPosition1, fruitPosition2, fruitSqrIdx;
     while(!dropFruit){
-        fruitPosition1 = Math.floor(Math.random()*board.length);
-        fruitPosition2 = Math.floor(Math.random()*board[0].length);
+        fruitPosition1 = randomIdx(board);
+        fruitPosition2 = randomIdx(board[0]);
         if(board[fruitPosition1][fruitPosition2] === 0)
             dropFruit = true;
     }
     board[fruitPosition1][fruitPosition2] = -1;
     fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
-    jellyFishIdx = Math.floor(Math.random()*jellyFishData.length);
+    jellyFishIdx = randomIdx(jellyFishData);
     document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = jellyFishData[jellyFishIdx];
     dropFruit = false;
 }
@@ -250,12 +273,16 @@ function dropAFruit () {
 function dropObstacle(n) {
     let objectPosition1, objectPosition2, objectSqrIdx;
     while(1){
-        objectPosition1 = Math.floor(Math.random()*board.length);
-        objectPosition2 = Math.floor(Math.random()*board[0].length);
+        objectPosition1 = randomIdx(board);
+        objectPosition2 = randomIdx(board[0]);
         if(board[objectPosition1][objectPosition2] !== 1 && board[objectPosition1][objectPosition2] !== -1)
             break;
     }
     board[objectPosition1][objectPosition2] = obstacleNo++ >= n ? 2 : 3;
+    if(obstacleNo === 3) {
+        soundEl.setAttribute("src", "./audio/dramaticImpact.mp3");
+        soundEl.play();
+    }
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
     `<img src="./data/image/mrCrabs.png" alt="" style="height: 4vmin;">`
@@ -264,6 +291,10 @@ function dropObstacle(n) {
 function cleanUpObstacle() {
     obstacleNo = 0;
     let cleanIdx;
+
+    soundEl.setAttribute("src", "./audio/ohTryAgain.mp3");
+    soundEl.play();
+
     board.forEach((x, idx1) => {
         x.forEach((y, idx2) => {
             if(board[idx1][idx2] === 2){

@@ -18,6 +18,7 @@ const jellyFishData = [`<img src="./data/image/jellyfishBluePink.png" alt="" sty
                        `<img src="./data/image/jellyfishRainbow.png" alt="" style="height: 4vmin;">`,
                        `<img src="./data/image/jellyfishRed.png" alt="" style="height: 4vmin;">`,]
 
-const musicData = []
+const musicData = [`./audio/funSong.mp3`,
+                   `./audio/themeSong.mp3`,]
 
-export {imgData, jellyFishData}
+export {imgData, jellyFishData, musicData}
