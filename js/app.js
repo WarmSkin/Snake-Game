@@ -28,22 +28,23 @@ const board = [
 
 const snake = {
     tailLength: 0,
-    tailNo: "",
+    tailStr: "",
     tailIdx: [],
 }
 
 const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 /*---------------------------- Variables (state) ----------------------------*/
-let pause = false, lost = false, newMoveIdx, moveIdx = 0, snakeMoved = false, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
+let gameRunning, pause = false, lost = false, newMoveIdx, moveIdx = 0, snakeMoved = false, sqrIdx, oldHeadSqrIdx, jellyFishIdx;
 let headPosition1 = 11, headPosition2 = 11, newHeadPosition1, newHeadPosition2, lastTailPosition1, lastTailPosition2, lastTailIdx;
 let movePosition1, movePosition2, eatFruit = false, dropFruit = true, jellyTailIdx = 0, jellyDisplayIdx, obstacleNo = 0;
 
 /*------------------------ Cached Element References ------------------------*/
 const messageEl = document.querySelector("#message");
 const boardEl = document.querySelector(".board");
-const startEl = document.querySelector('#start-bt');
-const pauseEl = document.querySelector('#pause-bt');
-const scoreEl = document.querySelector('#score');
+const startEl = document.querySelector("#start-bt");
+const pauseEl = document.querySelector("#pause-bt");
+const resetEl = document.querySelector("#reset");
+const scoreEl = document.querySelector("#score");
 const soundEl = new Audio();
 
 soundEl.setAttribute("src", "./audio/touch.mp3")
@@ -51,19 +52,33 @@ soundEl.setAttribute("src", "./audio/touch.mp3")
 boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
 pauseEl.addEventListener('click', () => pause = !pause);
-
+resetEl.addEventListener('click', reset);
 
 /*-------------------------------- Functions --------------------------------*/
 
+function reset() {
+    clearInterval(gameRunning);
+    messageEl.innerHTML = "";
+    soundEl.setAttribute("src", "./audio/touch.mp3")
+    setUpWalls();
+    snake.tailLength = 0;
+    snake.tailStr = "";
+    snake.tailIdx = [];
+    lost = false, headPosition1 = 11, headPosition2 = 11, dropFruit = true , eatFruit = false;
+    scoreEl.innerHTML = `Score:  0`;
+    gameRunning = setInterval(gamePlay, 400);
+}
+
 function game() {
     gameStart();
-    let running = setInterval(gamePlay, 400);
+    gameRunning = setInterval(gamePlay, 400);
 }
 
 function gameStart() {
     messageEl.innerHTML = "";
     pauseEl.style.display = "";
     scoreEl.style.display = "";
+    resetEl.style.display = "";
     boardEl.style.display = "grid";
     startEl.style.display = "none";
     setUpWalls();
@@ -73,11 +88,15 @@ function setUpWalls () {
     let wallSqrIdx;
     board.forEach((x, idx1) => {
         x.forEach((y, idx2) => {
+            wallSqrIdx = board.length*idx1 + idx2;
             if(idx1 === 0 || idx1 === board.length -1 || idx2 === 0 || idx2 === x.length-1){
                 board[idx1][idx2] = 1;
-                wallSqrIdx = 22*idx1 + idx2;
                 document.getElementById(`sqr${wallSqrIdx}`).innerHTML = 
-                `<img src="./data/image/patrick's-house.png" alt="" style="height: 4vmin;">`
+                `<img src="./data/image/patrick's-house.png" alt="" style="height: 4vmin;">`;
+            }
+            else {
+                board[idx1][idx2] = 0;
+                document.getElementById(`sqr${wallSqrIdx}`).innerHTML = "";
             }
         })
     })
@@ -91,16 +110,14 @@ function gamePlay() {
         pauseEl.innerHTML = "Pause";
         snakeMove();
         render();
-        if(lost)
-        clearInterval(running);
     }
 }
 
 function snakeMove() { 
-    oldHeadSqrIdx = 22*(headPosition1) + headPosition2;
+    oldHeadSqrIdx = board.length*(headPosition1) + headPosition2;
     newHeadPosition1 = moveDirections[moveIdx][0] + headPosition1;
     newHeadPosition2 = moveDirections[moveIdx][1] + headPosition2;
-    sqrIdx = 22*(newHeadPosition1) + newHeadPosition2;
+    sqrIdx = board.length*(newHeadPosition1) + newHeadPosition2;
     
     if(!pause && board[newHeadPosition1][newHeadPosition2] === -1) {
         eatFruit = true;
@@ -110,36 +127,35 @@ function snakeMove() {
         
     }
     if(snake.tailLength){
-        snake.tailNo =`a${headPosition1}b${headPosition2}` + snake.tailNo;
+        snake.tailStr =`a${headPosition1}b${headPosition2}` + snake.tailStr;
         
-        let tailStr = snake.tailNo; //make a copy.
+        let tailStr = snake.tailStr; //make a copy.
         //get the positions from the string.
         for(let i = tailStr.length -1; i >= 0; i--){
             if(tailStr[i] === 'b') {
                 lastTailPosition2 = +(tailStr.slice(i).replace('b',''));
                 tailStr = tailStr.slice(0, i);
                 if(!eatFruit)
-                snake.tailNo = snake.tailNo.slice(0, i);
+                snake.tailStr = snake.tailStr.slice(0, i);
             }
             else if (tailStr[i] === 'a'){
                 lastTailPosition1 = +(tailStr.slice(i).replace("a",''));
                 //we don't need to update the tailStr(since we done with it) here.
                 if(!eatFruit)
-                snake.tailNo = snake.tailNo.slice(0, i);
+                snake.tailStr = snake.tailStr.slice(0, i);
                 break;
             }
         }
-        lastTailIdx = 22*lastTailPosition1 + lastTailPosition2;
+        lastTailIdx = board.length*lastTailPosition1 + lastTailPosition2;
     }
     
 }
 
 // const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 function changeDirection(e) {
+    
     if(!pause){
         let directionId = +e.target.id.replace('sqr', '');
-        console.log("🚀 ~ file: app.js:141 ~ changeDirection ~ directionId", directionId)
-
         if(directionId && snakeMoved){ 
             movePosition1 = Math.floor(directionId/board.length);
             movePosition2 = directionId%board.length;
@@ -158,8 +174,6 @@ function changeDirection(e) {
                 else if(movePosition2 > headPosition2) newMoveIdx = 6;
                 else if(movePosition2 < headPosition2) newMoveIdx = 7;
             }
-            console.log("🚀 ~ file: app.js:160 ~ changeDirection ~ newMoveIdx", newMoveIdx)
-            console.log("🚀 ~ file: app.js:160 ~ changeDirection ~ MoveIdx", moveIdx)
             //snake should not be able to go reverse direction
             if(!(moveDirections[moveIdx][0] + moveDirections[newMoveIdx][0] === 0
                 && moveDirections[moveIdx][1] + moveDirections[newMoveIdx][1] === 0)){
@@ -222,7 +236,7 @@ function dropAFruit () {
     while(!dropFruit){
         fruitPosition1 = Math.floor(Math.random()*board.length);
         fruitPosition2 = Math.floor(Math.random()*board[0].length);
-        if(board[fruitPosition1][fruitPosition2] !== 1)
+        if(board[fruitPosition1][fruitPosition2] === 0)
             dropFruit = true;
     }
     board[fruitPosition1][fruitPosition2] = -1;
@@ -248,6 +262,7 @@ function dropObstacle(n) {
 }
 
 function cleanUpObstacle() {
+    obstacleNo = 0;
     let cleanIdx;
     board.forEach((x, idx1) => {
         x.forEach((y, idx2) => {

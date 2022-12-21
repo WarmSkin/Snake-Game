@@ -44,8 +44,8 @@ section.board {
 }
 
 .sqr {
-    border: 0.5px dotted black;
-    font-size: 3vmin;
+    /* border: 0.5px dotted black; */
+    font-size: 4vmin;
     text-align: center;
     vertical-align: middle;
     /* transition: 0.2s; */
