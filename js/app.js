@@ -45,9 +45,10 @@ const startEl = document.querySelector("#start-bt");
 const pauseEl = document.querySelector("#pause-bt");
 const resetEl = document.querySelector("#reset");
 const scoreEl = document.querySelector("#score");
-const soundEl = new Audio();
+const gamePlaySoundEl = new Audio();
+const specialEventSoundEl = new Audio();
 
-soundEl.setAttribute("src", "./audio/touch.mp3")
+gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
@@ -61,8 +62,8 @@ function pauseF () {
         if(pause) {
             clearInterval(gameRunning);
             pauseEl.innerHTML = "Continue";
-            soundEl.setAttribute("src", musicData[randomIdx(musicData)]);
-            soundEl.play();
+            gamePlaySoundEl.setAttribute("src", musicData[randomIdx(musicData)]);
+            gamePlaySoundEl.play();
         }
         else {
             gameRunning = setInterval(gamePlay, 400);
@@ -73,7 +74,7 @@ function pauseF () {
 function reset() {
     clearInterval(gameRunning);
     messageEl.innerHTML = "";
-    soundEl.setAttribute("src", "./audio/touch.mp3")
+    gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3")
     setUpWalls();
     snake.tailLength = 0;
     snake.tailStr = "";
@@ -119,7 +120,7 @@ function setUpWalls () {
 function gamePlay() {
    if(!lost) {
         pauseEl.innerHTML = "Pause";
-        soundEl.setAttribute("src", "./audio/touch.mp3");
+        gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
         snakeMove();
         render();
     }
@@ -205,8 +206,8 @@ function render() {
     if(!pause && board[newHeadPosition1][newHeadPosition2] > 0){
         lost = true;
         messageEl.innerHTML = `You lose! Your score is ${snake.tailLength}.`;
-        soundEl.setAttribute("src", "./audio/endingSong.mp3");
-        soundEl.play();
+        gamePlaySoundEl.setAttribute("src", "./audio/endingSong.mp3");
+        gamePlaySoundEl.play();
         clearInterval(gameRunning);
     }
     
@@ -227,7 +228,8 @@ function render() {
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = jellyFishData[jellyDisplayIdx];
             board[headPosition1][headPosition2] = 1;
             
-            soundEl.play();
+            gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
+            gamePlaySoundEl.play();
             eatFruit = false;
             dropFruit = true;
         }
@@ -279,9 +281,10 @@ function dropObstacle(n) {
             break;
     }
     board[objectPosition1][objectPosition2] = obstacleNo++ >= n ? 2 : 3;
-    if(obstacleNo === 3) {
-        soundEl.setAttribute("src", "./audio/dramaticImpact.mp3");
-        soundEl.play();
+    if(obstacleNo === 2) {
+        console.log("changeMusic");
+        specialEventSoundEl.setAttribute("src", "./audio/dramaticImpact.mp3");
+        specialEventSoundEl.play();
     }
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
@@ -292,8 +295,9 @@ function cleanUpObstacle() {
     obstacleNo = 0;
     let cleanIdx;
 
-    soundEl.setAttribute("src", "./audio/ohTryAgain.mp3");
-    soundEl.play();
+    specialEventSoundEl.setAttribute("src", "./audio/ohTryAgain.mp3");
+    specialEventSoundEl.play();
+    console.dir(gamePlaySoundEl);
 
     board.forEach((x, idx1) => {
         x.forEach((y, idx2) => {
