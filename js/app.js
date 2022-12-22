@@ -84,6 +84,7 @@ function pauseF () {
 function reset() {
     clearInterval(gameRunning);
     messageEl.innerHTML = "";
+    boardEl.style.display = "grid";
     gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3")
     setUpWalls();
     snake.tailLength = 0;
@@ -221,6 +222,10 @@ function render() {
         gamePlaySoundEl.setAttribute("src", "./audio/endingSong.mp3");
         gamePlaySoundEl.play();
         clearInterval(gameRunning);
+        animateCSS(".board", "hinge");
+        setTimeout(()=>{
+        boardEl.style.display = "none";}, 1970);
+        
     }
     
     if(!lost){
