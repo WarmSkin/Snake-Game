@@ -46,6 +46,7 @@ const pauseEl = document.querySelector("#pause-bt");
 const resetEl = document.querySelector("#reset");
 const scoreEl = document.querySelector("#score");
 const musicEl = document.querySelector("#music");
+const bottomBtEl = document.querySelector(".bottom");
 const gamePlaySoundEl = new Audio();
 const specialEventSoundEl = new Audio();
 const bounceSoundEl = new Audio();
@@ -59,6 +60,9 @@ startEl.addEventListener('mouseover', (e) => animateCSS(`${e.target.id}`, "bounc
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
 musicEl.addEventListener('click', musicControl);
+bottomBtEl.addEventListener('mouseover', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "red";});
+bottomBtEl.addEventListener('mouseout', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(251, 233, 49)";});
+
 
 /*-------------------------------- Functions --------------------------------*/
 
@@ -114,7 +118,7 @@ function gameStart() {
     musicEl.style.display = "";
     boardEl.style.display = "grid";
     startEl.style.display = "none";
-    document.querySelector("body").style.backgroundImage = `url("../data/image/gamePlayBackground.jpg")`
+    document.querySelector("body").style.backgroundImage = `url("../data/image/gamePlayBackground.jpg")`;
     setUpWalls();
 }
 

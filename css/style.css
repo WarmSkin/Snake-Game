@@ -1,27 +1,26 @@
 body {
     background-color: gray;
-	/* Use a system font, if none are available use an available sans-sarif font */
+	
 	font-family:cursive;
 	margin: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-image: url("../data/image/spongebob.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position-y: center;
-  /* background-position-x:  ; */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../data/image/spongebob.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position-y: center;
 
-  /* disable user select */
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                          supported by Chrome, Edge, Opera and Firefox */
+    /* disable user select */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                            supported by Chrome, Edge, Opera and Firefox */
 }
 
 h3 {
@@ -53,8 +52,9 @@ button {
     border-radius: 100px;
 }
 
-.bottom {
+.bottom button {
     margin-top: 10px;
+    background-color: rgb(251, 233, 49);
 }
 
 .sqr {
@@ -75,4 +75,5 @@ button {
     font-family: cursive;
     font-weight: bold;
 }
-/* z-index   */
+
+/* z-index, didn't use, but good to know */
