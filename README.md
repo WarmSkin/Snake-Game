@@ -1,6 +1,6 @@
 # Jellyfish Hunting!
 
-![A screenshot of the game play.](../snake-game/data/image/gameplayScreenShot.png)
+![A screenshot of the game play.](./data/image/gameplayScreenShot.png)
 
 *Jellyfish Hunting* is a Snake-Game re-creation with a Spongebob theme! Wild jellyfish spawn randomly one at a time on the map. Spongebob follows the mouse icon when infront of him to catch each jellyfish. Once caught, each jellyfish follows Spongebob. When the player reaches a certain score, Mr. Krabs will wildly spawn to stop Spongebob's joy-hunting. The game ends when Spongebob runs into a wall, his jellyfish tail, or Mr.Krabs.
 
