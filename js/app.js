@@ -60,7 +60,7 @@ startEl.addEventListener('mouseover', (e) => animateCSS(`${e.target.id}`, "bounc
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
 musicEl.addEventListener('click', musicControl);
-bottomBtEl.addEventListener('mouseover', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "red";});
+bottomBtEl.addEventListener('mouseover', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(255, 96, 170)";});
 bottomBtEl.addEventListener('mouseout', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(251, 233, 49)";});
 
 
