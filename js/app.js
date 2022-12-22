@@ -50,7 +50,7 @@ const gamePlaySoundEl = new Audio();
 const specialEventSoundEl = new Audio();
 const bounceSoundEl = new Audio();
 
-bounceSoundEl.setAttribute("src", "./audio/bounce.wav");
+bounceSoundEl.setAttribute("src", "./audio/touch.mp3");
 gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('mouseover', changeDirection);
@@ -94,7 +94,8 @@ function reset() {
     snake.tailLength = 0;
     snake.tailStr = "";
     snake.tailIdx = [];
-    lost = false, headPosition1 = 11, headPosition2 = 11, dropFruit = true , eatFruit = false;
+    lost = false, pause = false, headPosition1 = 11;
+    headPosition2 = 11, dropFruit = true , eatFruit = false;
     scoreEl.innerHTML = `Score:  0`;
     gameRunning = setInterval(gamePlay, 400);
 }
