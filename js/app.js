@@ -1,4 +1,4 @@
-import { imgData, jellyFishData, musicData } from "../data/data.js";
+import { imgData, jellyFishData, musicData, animationData } from "../data/data.js";
 
 /*-------------------------------- Constants --------------------------------*/
 const board = [
@@ -224,7 +224,7 @@ function render() {
         clearInterval(gameRunning);
         animateCSS(".board", "hinge");
         setTimeout(()=>{
-        boardEl.style.display = "none";}, 1970);
+        boardEl.style.display = "none";}, 2000);
         
     }
     
@@ -285,6 +285,7 @@ function dropAFruit () {
     fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
     jellyFishIdx = randomIdx(jellyFishData);
     document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = jellyFishData[jellyFishIdx];
+    animateCSS(`#sqr${fruitSqrIdx}`, animationData[randomIdx(animationData)]);
     dropFruit = false;
 }
 

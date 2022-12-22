@@ -21,4 +21,9 @@ const jellyFishData = [`<img src="./data/image/jellyfishBluePink.png" alt="" sty
 const musicData = [`./audio/funSong.mp3`,
                    `./audio/themeSong.mp3`,]
 
-export {imgData, jellyFishData, musicData}
+const animationData = [`slideInDown`,
+                       `slideInLeft`,
+                       `slideInRight`,
+                       `slideInUp`,]
+
+export {imgData, jellyFishData, musicData, animationData}
