@@ -53,6 +53,10 @@ button {
     border-radius: 100px;
 }
 
+.bottom {
+    margin-top: 10px;
+}
+
 .sqr {
     /* border: 0.5px dotted black; */
     font-size: 4vmin;
