@@ -55,7 +55,7 @@ gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
-startEl.addEventListener('mouseover', (e) => animateCSS(`#${e.target.id}`, "bounce"));
+startEl.addEventListener('mouseover', (e) => animateCSS(`${e.target.id}`, "bounce"));
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
 musicEl.addEventListener('click', musicControl);
@@ -66,6 +66,7 @@ function musicControl() {
     musicOn = !musicOn;
     gamePlaySoundEl.volume = musicOn? 0.7 : 0;
     specialEventSoundEl.volume = musicOn? 0.7 : 0;
+    bounceSoundEl.volume = musicOn? 0.7 : 0;
     musicEl.innerHTML = musicOn? "Sound: On" : "Sound:Off";
 }
 
@@ -190,7 +191,7 @@ function snakeMove() {
 // const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 function changeDirection(e) {
     if(pause && e.target.className !== "sqr")
-        animateCSS(`#${e.target.id}`, "bounce");
+        animateCSS(`${e.target.id}`, "bounce");
     if(!pause){
         let directionId = +e.target.id.replace('sqr', '');
         if(directionId && snakeMoved){ 
@@ -228,7 +229,7 @@ function render() {
         gamePlaySoundEl.setAttribute("src", "./audio/endingSong.mp3");
         gamePlaySoundEl.play();
         clearInterval(gameRunning);
-        animateCSS(".board", "hinge");
+        animateCSS("board", "hinge");
         setTimeout(()=>{
         boardEl.style.display = "none";}, 1900);
         
@@ -291,7 +292,7 @@ function dropAFruit () {
     fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
     jellyFishIdx = randomIdx(jellyFishData);
     document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = `${jellyFishData[jellyFishIdx]} id="sqr${fruitSqrIdx}">`;
-    animateCSS(`#sqr${fruitSqrIdx}`, animationData[randomIdx(animationData)]);
+    animateCSS(`sqr${fruitSqrIdx}`, animationData[randomIdx(animationData)]);
     dropFruit = false;
 }
 
@@ -313,7 +314,7 @@ function dropObstacle(n) {
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
     `<img src="./data/image/mrCrabs.png" id="sqr${objectSqrIdx}" alt="" style="height: 5vmin;">`
-    animateCSS(`#sqr${objectSqrIdx}`, "bounce");
+    animateCSS(`sqr${objectSqrIdx}`, "bounce");
 }
 
 function cleanUpObstacle() {
@@ -342,10 +343,11 @@ const animateCSS = (element, animation, prefix = 'animate__') =>
   // We create a Promise and return it
   new Promise((resolve, reject) => {
     const animationName = `${prefix}${animation}`;
-    const node = document.querySelector(element);
+    const node = document.getElementById(element);
 
     node.classList.add(`${prefix}animated`, animationName);
-    if(animation === "bounce") bounceSoundEl.play(); //add a sound effect for bounce
+    //add sound effect, but not with obstacle drops
+    if(animation === "bounce" && !obstacleNo) bounceSoundEl.play(); 
 
     // When the animation ends, we clean the classes and resolve the Promise
     function handleAnimationEnd(event) {
