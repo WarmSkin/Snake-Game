@@ -48,11 +48,14 @@ const scoreEl = document.querySelector("#score");
 const musicEl = document.querySelector("#music");
 const gamePlaySoundEl = new Audio();
 const specialEventSoundEl = new Audio();
+const bounceSoundEl = new Audio();
 
+bounceSoundEl.setAttribute("src", "./audio/bounce.wav");
 gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
 /*----------------------------- Event Listeners -----------------------------*/
 boardEl.addEventListener('mouseover', changeDirection);
 startEl.addEventListener('click', game);
+startEl.addEventListener('mouseover', (e) => animateCSS(`#${e.target.id}`, "bounce"));
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
 musicEl.addEventListener('click', musicControl);
@@ -85,6 +88,7 @@ function reset() {
     clearInterval(gameRunning);
     messageEl.innerHTML = "";
     boardEl.style.display = "grid";
+    boardEl.className = "board";
     gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3")
     setUpWalls();
     snake.tailLength = 0;
@@ -120,7 +124,7 @@ function setUpWalls () {
             if(idx1 === 0 || idx1 === board.length -1 || idx2 === 0 || idx2 === x.length-1){
                 board[idx1][idx2] = 1;
                 document.getElementById(`sqr${wallSqrIdx}`).innerHTML = 
-                `<img src="./data/image/patrick's-house.png" alt="" style="height: 5vmin;">`;
+                `<img src="./data/image/patrick's-house.png" id="sqr${wallSqrIdx}" alt="" style="height: 5vmin;">`;
             }
             else {
                 board[idx1][idx2] = 0;
@@ -184,7 +188,8 @@ function snakeMove() {
 
 // const moveDirections = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]];
 function changeDirection(e) {
-    
+    if(pause && e.target.className !== "sqr")
+        animateCSS(`#${e.target.id}`, "bounce");
     if(!pause){
         let directionId = +e.target.id.replace('sqr', '');
         if(directionId && snakeMoved){ 
@@ -224,7 +229,7 @@ function render() {
         clearInterval(gameRunning);
         animateCSS(".board", "hinge");
         setTimeout(()=>{
-        boardEl.style.display = "none";}, 2000);
+        boardEl.style.display = "none";}, 1900);
         
     }
     
@@ -242,7 +247,7 @@ function render() {
         if(eatFruit){
             document.getElementById(`sqr${sqrIdx}`).innerHTML = `<img src="./data/image/spongebobJump.png" alt="">`;
             board[newHeadPosition1][newHeadPosition2] = 1;
-            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = jellyFishData[jellyDisplayIdx];
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = `${jellyFishData[jellyDisplayIdx]} id="sqr${oldHeadSqrIdx}">`;
             board[headPosition1][headPosition2] = 1;
             
             gamePlaySoundEl.setAttribute("src", "./audio/touch.mp3");
@@ -251,16 +256,16 @@ function render() {
             dropFruit = true;
         }
         else if(snake.tailLength) {
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = imgData[moveIdx];
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = `${imgData[moveIdx]} id="sqr${sqrIdx}">`;
                 // `<img src="./data/spongebobRuningLeft.png" alt="" style="height: 4vmin;">`
             board[newHeadPosition1][newHeadPosition2] = 1;
-            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = jellyFishData[jellyDisplayIdx];
+            document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = `${jellyFishData[jellyDisplayIdx]} id="sqr${oldHeadSqrIdx}">`;
             board[headPosition1][headPosition2] = 1;
             document.getElementById(`sqr${lastTailIdx}`).innerHTML = "";
             board[lastTailPosition1][lastTailPosition2] = 0;
         }
         else{
-            document.getElementById(`sqr${sqrIdx}`).innerHTML = imgData[moveIdx];
+            document.getElementById(`sqr${sqrIdx}`).innerHTML = `${imgData[moveIdx]} id="sqr${sqrIdx}">`;
                 // `<img src="./data/spongebobRuningLeft.png" alt="" style="height: 4vmin;">`
             board[newHeadPosition1][newHeadPosition2] = 1;
             document.getElementById(`sqr${oldHeadSqrIdx}`).innerHTML = "";
@@ -284,7 +289,7 @@ function dropAFruit () {
     board[fruitPosition1][fruitPosition2] = -1;
     fruitSqrIdx = board.length*fruitPosition1 + fruitPosition2;
     jellyFishIdx = randomIdx(jellyFishData);
-    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = jellyFishData[jellyFishIdx];
+    document.getElementById(`sqr${fruitSqrIdx}`).innerHTML = `${jellyFishData[jellyFishIdx]} id="sqr${fruitSqrIdx}">`;
     animateCSS(`#sqr${fruitSqrIdx}`, animationData[randomIdx(animationData)]);
     dropFruit = false;
 }
@@ -306,7 +311,7 @@ function dropObstacle(n) {
     }
     objectSqrIdx = board.length*objectPosition1 + objectPosition2;
     document.getElementById(`sqr${objectSqrIdx}`).innerHTML = 
-    `<img src="./data/image/mrCrabs.png" alt="" style="height: 5vmin;">`
+    `<img src="./data/image/mrCrabs.png" id="sqr${objectSqrIdx}" alt="" style="height: 5vmin;">`
     animateCSS(`#sqr${objectSqrIdx}`, "bounce");
 }
 
@@ -323,7 +328,7 @@ function cleanUpObstacle() {
             if(board[idx1][idx2] === 2){
                 board[idx1][idx2] = 0;
                 cleanIdx = idx1*board.length + idx2;
-                document.getElementById(`sqr${cleanIdx}`).innerHTML = ``;
+                document.getElementById(`sqr${cleanIdx}`).innerHTML = "";
             }
         })
     })
@@ -339,6 +344,7 @@ const animateCSS = (element, animation, prefix = 'animate__') =>
     const node = document.querySelector(element);
 
     node.classList.add(`${prefix}animated`, animationName);
+    if(animation === "bounce") bounceSoundEl.play(); //add a sound effect for bounce
 
     // When the animation ends, we clean the classes and resolve the Promise
     function handleAnimationEnd(event) {
