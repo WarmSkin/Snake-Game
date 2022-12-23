@@ -5,7 +5,7 @@ Discription: *Jellyfish Hunting* is a Snake-Game re-creation game.
             Spongebob (snake head) move in eight directions, collects different types jellyfish he captures.
             
 The code:   Use a two dimensional array as game board data.
-            Use a mouseover event for direction guide.
+            Use a mousemove event for direction guide.
             Use a string to store tails position.
             Update the head and tails position dynamiclly.
             Keep the function name as a snake-game for a easy understanding.
@@ -68,7 +68,7 @@ startEl.addEventListener('click', game);
 pauseEl.addEventListener('click', pauseF);
 resetEl.addEventListener('click', reset);
 musicEl.addEventListener('click', musicControl);
-boardEl.addEventListener('mouseover', changeDirection);
+boardEl.addEventListener('mousemove', changeDirection);
 startEl.addEventListener('mouseover', (e) => animateCSS(`${e.target.id}`, "bounce"));
 bottomBtEl.addEventListener('mouseover', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(255, 96, 170)";});
 bottomBtEl.addEventListener('mouseout', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(251, 233, 49)";});

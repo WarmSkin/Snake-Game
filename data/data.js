@@ -21,7 +21,7 @@ const jellyFishData = [`<img src="./data/image/jellyfishBluePink.png" alt="" sty
 
 const musicData = [`./audio/funSong.mp3`,
                    `./audio/themeSong.mp3`,
-                   `./audio/veryFirstChristmas.mp3`,]
+                   `./audio/theVeryFirstChristmas.mp3`,]
 
 const animationData = [`slideInDown`,
                        `slideInLeft`,
