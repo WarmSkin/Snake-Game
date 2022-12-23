@@ -70,8 +70,8 @@ resetEl.addEventListener('click', reset);
 musicEl.addEventListener('click', musicControl);
 boardEl.addEventListener('mousemove', changeDirection);
 startEl.addEventListener('mouseover', (e) => animateCSS(`${e.target.id}`, "bounce"));
-bottomBtEl.addEventListener('mouseover', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(255, 96, 170)";});
-bottomBtEl.addEventListener('mouseout', (e)=> {if(e.target.className === 'but') e.target.style.backgroundColor = "rgb(251, 233, 49)";});
+bottomBtEl.addEventListener('mouseover', btChangeColor);
+bottomBtEl.addEventListener('mouseout', btRestColor);
 
 
 /*-------------------------------- Functions --------------------------------*/
@@ -206,13 +206,13 @@ function render() {
     //if snake runs into objects, game lose
     if(!pause && board[newHeadPosition1][newHeadPosition2] > 0){
         lost = true;
-        messageEl.innerHTML = `You lose! Your score is ${snake.tailLength}.`;
         specialEventSoundEl.setAttribute("src", "./audio/endingSong.mp3");
         specialEventSoundEl.play();
         clearInterval(gameRunning);
         animateCSS("board", "hinge");
         setTimeout(()=>{
-        boardEl.style.display = "none";}, 1900);
+        boardEl.style.display = "none";
+        messageEl.innerHTML = `You lose!<br>Your score is ${snake.tailLength}.`;}, 1900);
     }
     
     if(!lost){
@@ -362,6 +362,16 @@ function musicControl() {
 //return a random index from a obj or arr.
 function randomIdx(obj) {
     return Math.floor(Math.random()*obj.length);
+}
+
+function btChangeColor(e) {
+    if(e.target.className === "but" && e.target.id != "score") 
+        e.target.style.backgroundColor = "rgb(255, 96, 170)";
+}
+
+function btRestColor(e) {
+    if(e.target.className === "but") 
+        e.target.style.backgroundColor = "rgb(251, 233, 49)";
 }
 
 //ANIMATION
