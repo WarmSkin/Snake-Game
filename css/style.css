@@ -15,7 +15,7 @@ body {
     justify-content: center;
     align-items: center;
     background-image: url("../data/image/spongebob.jpg");
-    background-size: cover;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position-y: center;
 
@@ -32,13 +32,22 @@ body {
 h3 {
     font-family: spongboyMeBob;
     text-align: center;
-    font-weight: bold;
-    font-size: 4vh;
+    font-size: 38px;
     color: rgb(251, 233, 49);
+}
+
+ul {
+    color: whitesmoke;
+    font-size: 21px;
+}
+
+button {
+    border-radius: 100px;
 }
 
 section.game-play {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -46,6 +55,7 @@ section.game-play {
 section.button {
     display: flex;
     flex-direction: column;
+    margin-right: -29vmin;
 }
 
 section.board {
@@ -55,11 +65,16 @@ section.board {
     grid-gap: 0vmin;
     background-color:rgb(109, 207, 246);
     background-size: cover;
-    margin-right: 8vmin;
 }
 
-button {
-    border-radius: 100px;
+.message {
+    margin-top: -10vh;
+}
+
+.bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .bottom button {
@@ -70,22 +85,17 @@ button {
 }
 
 .sqr {
-    /* border: 0.5px dotted black; */
-    font-size: 4vmin;
-    text-align: center;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #start-bt {
-    position: relative;
+    border-radius: 360%;
+    height: 17vh;
+    width: 21vmin;
     border: none;
     background-color: transparent;
-    font-size: 5vh;
-    margin-top: 18vh;
-    margin-right: -14vw;
-    color:rgb(255, 96, 170);
-    font-family: cursive;
-    font-weight: bold;
 }
 
 /* z-index, didn't use, but good to know */
