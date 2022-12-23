@@ -298,7 +298,7 @@ function cleanUpObstacle() {
     obstacleNo = 0;
     let cleanIdx;
     //play spongebob's sarcasm sound
-    specialEventSoundEl.setAttribute("src", "./audio/ohTryAgain.mp3");
+    specialEventSoundEl.setAttribute("src", "./audio/spongebobMrKrabs.mp3");
     specialEventSoundEl.play();
 
     //clear up all value 2 obstacles
@@ -365,7 +365,7 @@ function randomIdx(obj) {
 }
 
 function btChangeColor(e) {
-    if(e.target.className === "but" && e.target.id != "score") 
+    if(e.target.className === "but" && e.target.id != "score")
         e.target.style.backgroundColor = "rgb(255, 96, 170)";
 }
 
